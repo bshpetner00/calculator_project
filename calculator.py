@@ -13,7 +13,7 @@ def net_profit(ticker,startdate,enddate,investment):
 def percent_profit(ticker,startdate,enddate):
     api = "https://api.tiingo.com/tiingo/daily/{}/prices?token={}&startDate={}&endDate={}".format(ticker,key,startdate,enddate)
     data = requests.get(api).json()
-    if data == []:
+    if type(data) == type("String"):
         print("You didn't have a valid stock")
         sys.exit()
     firstClose = data[0]["close"]
@@ -33,6 +33,29 @@ def compare_stocks(ticker1,ticker2,startdate,enddate):
         return ("Both stocks performed equally over the given period of time")
     
 
+def getStockVolatility(ticker,startdate,enddate):
+    api = "https://api.tiingo.com/tiingo/daily/{}/prices?token={}&startDate={}&endDate={}".format(ticker,key,startdate,enddate)
+    data = requests.get(api).json()
+    if type(data) == type("String"):
+        print("You didn't input a valid stock")
+        sys.exit()
+    close_dates = []
+    deviations = []
+    for i in data:
+        close_dates.append(i["close"])
+    avg =0
+    for date in close_dates:
+        avg += date
+    avg = avg / len(close_dates)
+    for date in close_dates:
+        deviations.append((date-avg) ** 2)
+    standard_deviation = 0 
+    for deviation in deviations:
+        standard_deviation += deviation
+    
+    print(avg)
+    return
+
 def compare_stocksUser():
     stock1 = input("What is one stock you wanna compare:\n").upper()
     stock2 = input("And another?:\n").upper()
@@ -44,4 +67,5 @@ def compare_stocksUser():
 #MVP
 # print(compare_stocks("AAPL","AMD","01-02-2019","01-02-2020"))
 # print(percent_profit("AMD","01-02-2019","01-02-2020"))
-compare_stocksUser()
+#compare_stocksUser()
+print(getStockVolatility("AAPL","01-02-2019","01-02-2020"))
