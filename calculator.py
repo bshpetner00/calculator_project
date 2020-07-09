@@ -1,4 +1,4 @@
-import definitions
+import definitions,requests,sys
 # The line above will let you separate your concerns by defining functions your calculator might use in a separate file.
 key = "66aa1fbcd15f0d1adf3e21ae25382d198deaeea3"
 print("Welcome to the Stock Boss Calculator\n\nYou can check out a stock's performance, examine the Beta value of a stock versus SPY, or examine the volatility of a particular stock")
@@ -13,9 +13,12 @@ def net_profit(ticker,startdate,enddate,investment):
 def percent_profit(ticker,startdate,enddate):
     api = "https://api.tiingo.com/tiingo/daily/{}/prices?token={}&startDate={}&endDate={}".format(ticker,key,startdate,enddate)
     data = requests.get(api).json()
+    if data == []:
+        print("You didn't have a valid stock")
+        sys.exit()
     firstClose = data[0]["close"]
     lastClose = data[len(data)-1]["close"]
-    return (lastClose-firstClose) / firstClose
+    return ((lastClose-firstClose) / firstClose) * 100
 
 def compare_stocks(ticker1,ticker2,startdate,enddate):
     investment1 = net_profit(ticker1,startdate,enddate,100.00)
@@ -29,3 +32,16 @@ def compare_stocks(ticker1,ticker2,startdate,enddate):
     else:
         return ("Both stocks performed equally over the given period of time")
     
+
+def compare_stocksUser():
+    stock1 = input("What is one stock you wanna compare:\n").upper()
+    stock2 = input("And another?:\n").upper()
+    date1 = input("What is the beginning date you want to consider(format:mm-dd-yyyy):")
+    date2 = input("What is the ending date you want to consider(format:mm-dd-yyyy):")
+    print(compare_stocks(stock1,stock2,date1,date2))
+    return
+
+#MVP
+# print(compare_stocks("AAPL","AMD","01-02-2019","01-02-2020"))
+# print(percent_profit("AMD","01-02-2019","01-02-2020"))
+compare_stocksUser()
