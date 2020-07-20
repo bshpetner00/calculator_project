@@ -41,12 +41,14 @@ def getStockVolatility(ticker,startdate,enddate):
     close_dates = []
     for i in data:
         close_dates.append(i["close"])
-    pctDelta = []
-    for i in range(0,len(close_dates)-1):
-        pctDelta.append(((close_dates[i+1] - close_dates[i]) / close_dates[i])*100)
-    stdDev = statistics.stdev(pctDelta) * math.sqrt(len(close_dates))
-    print (f"The volatility of the stock during the given period was %{stdDev}")
-    return
+    stdDev0 = statistics.pstdev(close_dates)
+    return (stdDev0/statistics.mean(close_dates))
+    # pctDelta = []
+    # for i in range(0,len(close_dates)-1):
+    #     pctDelta.append(((close_dates[i+1] - close_dates[i]) / close_dates[i])*100)
+    # stdDev = statistics.pstdev(pctDelta) * math.sqrt(len(close_dates))
+    # print (f"The volatility of the stock during the given period was %{stdDev}")
+    # return
 
 def compare_stocksUser():
     stock1 = input("What is one stock you wanna compare:\n").upper()
@@ -56,8 +58,15 @@ def compare_stocksUser():
     print(compare_stocks(stock1,stock2,date1,date2))
     return
 
+calculate_Beta(ticker,startdate,enddate):
+    api = "https://api.tiingo.com/tiingo/daily/{}/prices?token={}&startDate={}&endDate={}".format(ticker,key,startdate,enddate)
+    investment1 = percent_profit(ticker,startdate,enddate)
+    investment2 = percent_profit("SPY",startdate,enddate)
+    return investment1/investment2
+
+
 #MVP
 # print(compare_stocks("AAPL","AMD","01-02-2019","01-02-2020"))
 # print(percent_profit("AMD","01-02-2019","01-02-2020"))
 # compare_stocksUser()
-print(getStockVolatility("AMD","07-13-2020","07-15-2020"))
+print(getStockVolatility("GUSH","08-31-2015","07-19-2020"))
