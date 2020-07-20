@@ -1,4 +1,5 @@
 import definitions,requests,sys,statistics,math
+
 # The line above will let you separate your concerns by defining functions your calculator might use in a separate file.
 key = "66aa1fbcd15f0d1adf3e21ae25382d198deaeea3"
 print("Welcome to the Stock Boss Calculator\n\nYou can check out a stock's performance, examine the Beta value of a stock versus SPY, or examine the volatility of a particular stock")
@@ -58,15 +59,15 @@ def compare_stocksUser():
     print(compare_stocks(stock1,stock2,date1,date2))
     return
 
-calculate_Beta(ticker,startdate,enddate):
+def calculate_Beta(ticker,startdate,enddate):
     api = "https://api.tiingo.com/tiingo/daily/{}/prices?token={}&startDate={}&endDate={}".format(ticker,key,startdate,enddate)
     investment1 = percent_profit(ticker,startdate,enddate)
     investment2 = percent_profit("SPY",startdate,enddate)
     return investment1/investment2
 
 
-#MVP
+# MVP
 # print(compare_stocks("AAPL","AMD","01-02-2019","01-02-2020"))
 # print(percent_profit("AMD","01-02-2019","01-02-2020"))
 # compare_stocksUser()
-print(getStockVolatility("GUSH","08-31-2015","07-19-2020"))
+print(getStockVolatility("AMD","08-30-2019","06-30-2020"))
