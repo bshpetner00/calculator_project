@@ -1,4 +1,4 @@
-import definitions,requests,sys
+import definitions,requests,sys,statistics,math
 # The line above will let you separate your concerns by defining functions your calculator might use in a separate file.
 key = "66aa1fbcd15f0d1adf3e21ae25382d198deaeea3"
 print("Welcome to the Stock Boss Calculator\n\nYou can check out a stock's performance, examine the Beta value of a stock versus SPY, or examine the volatility of a particular stock")
@@ -31,7 +31,6 @@ def compare_stocks(ticker1,ticker2,startdate,enddate):
         return ("{} was the better choice to invest in between {} and {} as it changed by {}%").format(ticker2,startdate,enddate,percent)
     else:
         return ("Both stocks performed equally over the given period of time")
-    
 
 def getStockVolatility(ticker,startdate,enddate):
     api = "https://api.tiingo.com/tiingo/daily/{}/prices?token={}&startDate={}&endDate={}".format(ticker,key,startdate,enddate)
@@ -40,20 +39,13 @@ def getStockVolatility(ticker,startdate,enddate):
         print("You didn't input a valid stock")
         sys.exit()
     close_dates = []
-    deviations = []
     for i in data:
         close_dates.append(i["close"])
-    avg =0
-    for date in close_dates:
-        avg += date
-    avg = avg / len(close_dates)
-    for date in close_dates:
-        deviations.append((date-avg) ** 2)
-    standard_deviation = 0 
-    for deviation in deviations:
-        standard_deviation += deviation
-    
-    print(avg)
+    pctDelta = []
+    for i in range(0,len(close_dates)-1):
+        pctDelta.append(((close_dates[i+1] - close_dates[i]) / close_dates[i])*100)
+    stdDev = statistics.stdev(pctDelta) * math.sqrt(len(close_dates))
+    print (f"The volatility of the stock during the given period was %{stdDev}")
     return
 
 def compare_stocksUser():
@@ -67,5 +59,5 @@ def compare_stocksUser():
 #MVP
 # print(compare_stocks("AAPL","AMD","01-02-2019","01-02-2020"))
 # print(percent_profit("AMD","01-02-2019","01-02-2020"))
-#compare_stocksUser()
-print(getStockVolatility("AAPL","01-02-2019","01-02-2020"))
+# compare_stocksUser()
+print(getStockVolatility("AMD","07-13-2020","07-15-2020"))
